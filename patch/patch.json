@@ -1,7 +1,7 @@
 {
-    "name": "Chinese Calendar path",
-    "description": "Add Chinese calendar to Jolla Calendar",
-    "category": "utils",
+    "name": "Chinese Calendar patch",
+    "description": "Add Chinese calendar to Jolla offical Calendar",
+    "category": "calendar",
     "infos": {
         "maintainer": "birdzhang"
     }
