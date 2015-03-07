@@ -1,0 +1,8 @@
+{
+    "name": "Chinese Calendar path",
+    "description": "Add Chinese calendar to Jolla Calendar",
+    "category": "utils",
+    "infos": {
+        "maintainer": "birdzhang"
+    }
+}

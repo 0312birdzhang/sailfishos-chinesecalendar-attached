@@ -1,0 +1,36 @@
+--- /usr/share/jolla-calendar/pages/Util.js     2015-03-07 13:32:16.831347022 +0800
++++ /usr/share/jolla-calendar/pages/Util.js     2015-03-07 13:57:11.250137499 +0800
+@@ -1,5 +1,6 @@
+ .pragma library
+ .import Sailfish.Silica 1.0 as S
++Qt.include("GetCNDate.js")
+ 
+ function formatDateWeekday(d) {
+     var t = new Date
+@@ -14,21 +15,21 @@
+ 
+     if (delta == 0) {
+         //% "Today"
+-        return qsTrId("calendar-today")
++        return qsTrId("calendar-today")+","+GetLunarDay(t.getFullYear(), t.getMonth()+1, t.getDate())
+     } else if (delta == -1) {
+         //% "Yesterday"
+-        return qsTrId("calendar-yesterday")
++        return qsTrId("calendar-yesterday")+","+GetLunarDay(t.getFullYear(), t2.getMonth()+1, t2.getDate())
+     } else if (delta == 1) {
+         //% "Tomorrow"
+-        return qsTrId("calendar-tomorrow")
++        return qsTrId("calendar-tomorrow")+","+GetLunarDay(t.getFullYear(), t2.getMonth()+1, t2.getDate())
+     } else if (delta <= -7 || delta >= 7 ||
+                (delta < 0 && t2col > tcol) ||
+                (delta > 0 && tcol > t2col)) {
+         //: Long date pattern without year. Used e.g. in month view.
+         //% "d MMMM"
+-        return capitalize(Qt.formatDate(d, qsTrId("calendar-date_pattern_date_month")))
++        return capitalize(Qt.formatDate(d, qsTrId("calendar-date_pattern_date_month")))+","+GetLunarDay(t.getFullYear(), t2.getMonth()+1, t2.getDate())
+     } else {
+-        return capitalize(S.Format.formatDate(d, S.Format.WeekdayNameStandalone))
++        return capitalize(S.Format.formatDate(d, S.Format.WeekdayNameStandalone))+","+GetLunarDay(t.getFullYear(), t2.getMonth()+1, t2.getDate())
+     }
+ }
+ 
