@@ -10,15 +10,15 @@ BuildArch: armv7hl
 # << macros
 
 Summary:    Chinese Calendar patch
-Version:    0.0.4
+Version:    0.1.3
 Release:    1
 Group:      Qt/Qt
 License:    TODO
 Source0:    %{name}-%{version}.tar.bz2
 Requires:   patchmanager
-Requires:   jolla-calendar >= 0.4.39
+Requires:   jolla-calendar >= 0.6.3
 %description
-Add Chinese calendar to Jolla Calendar.
+Add Chinese lunar calendar to Jolla Calendar.
 
 
 %prep
@@ -42,7 +42,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/patchmanager/patches/sailfishos-chinesecalendar-attached
 cp -r patch/* %{buildroot}/usr/share/patchmanager/patches/sailfishos-chinesecalendar-attached
 mkdir -p %{buildroot}/usr/share/jolla-calendar/pages
-cp patch/GetCNDate.js %{buildroot}/usr/share/jolla-calendar/pages
+cp patch/LunarCalendar.js %{buildroot}/usr/share/jolla-calendar/pages
 # << install pre
 
 # >> install post
