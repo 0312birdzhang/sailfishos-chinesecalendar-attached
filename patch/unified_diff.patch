@@ -35,7 +35,7 @@
 +                            horizontalCenter: parent.horizontalCenter
 +                        }
 +                        text: {
-+                              var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month+1, model.day)
++                              var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
 +                              var lunarDay = lunar.lunarDay
 +                              if(lunarDay == 1||lunarDay == "1"){
 +                                  return lunar.lunarMonthName
@@ -62,3 +62,70 @@
  
                      Rectangle {
                          anchors.top: label.baseline
+--- /usr/share/jolla-calendar/pages/MonthPage.qml
++++ /usr/share/jolla-calendar/pages/MonthPage.qml
+@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
+ import org.nemomobile.calendar 1.0
+ import org.nemomobile.time 1.0
+ import "Util.js" as Util
+-
++import "LunarCalendar.js" as Lunar
+ Page {
+     id: root
+ 
+@@ -23,6 +23,25 @@ Page {
+         pageStack.push("EventEditPage.qml", { defaultDate: d })
+     }
+ 
++    function getLunarInfo(){
++      var now = new Date();
++      var d = datePicker.date
++      if(!d.getFullYear()){
++        d = now;
++      }
++      return Lunar.LunarCalendar.solarToLunar(d.getFullYear(),d.getMonth()+1,d.getDate())
++    }
++    function showLunarInfo(){
++      //var zodiac = getLunarInfo().zodiac;
++      var solarFestival = getLunarInfo().solarFestival;
++      var lunarFestival = getLunarInfo().lunarFestival;
++      var term = getLunarInfo().term;
++      var showtext="";
++      if(solarFestival)showtext+=solarFestival+",";
++      if(lunarFestival)showtext+=lunarFestival+"<br/>";
++      if(term)showtext+=term;
++      return showtext;
++    }
+     states: State {
+         name: "hidePageStackIndicator"
+         when: root.status != PageStatus.Inactive
+@@ -154,7 +173,23 @@ Page {
+                                                                                     : Theme.primaryColor)
+                 }
+             }
+-
++            Item {
++                width: parent.width
++                height: lunarText.height + Theme.paddingLarge
++                visible: root.initialLoadDone && lunarText.text.length > 6
++                Label {
++                    id: lunarText
++                    x: Theme.horizontalPageMargin
++                    anchors.verticalCenter: parent.verticalCenter
++                    width: parent.width - Theme.paddingLarge *2
++                    text:showLunarInfo()
++                    wrapMode: Text.WordWrap
++                    textFormat: Text.RichText;
++                    horizontalAlignment: Text.AlignRight
++                    font.pixelSize: Theme.fontSizeMedium
++                    color: Theme.secondaryHighlightColor
++                }
++            }
+             Item {
+                 width: parent.width
+                 height: placeholderText.height + 2*Theme.paddingLarge
+@@ -176,4 +211,3 @@ Page {
+         }
+     }
+ }
+-
