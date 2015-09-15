@@ -73,59 +73,158 @@
  Page {
      id: root
  
-@@ -23,6 +23,25 @@ Page {
+@@ -23,6 +23,41 @@ Page {
          pageStack.push("EventEditPage.qml", { defaultDate: d })
      }
  
 +    function getLunarInfo(){
 +      var now = new Date();
 +      var d = datePicker.date
-+      if(!d.getFullYear()){
++      if(!d.getFullYear()){//防止坑爹的jolla打开日历当天Date竟然是NAN的问题
 +        d = now;
 +      }
 +      return Lunar.LunarCalendar.solarToLunar(d.getFullYear(),d.getMonth()+1,d.getDate())
 +    }
 +    function showLunarInfo(){
-+      //var zodiac = getLunarInfo().zodiac;
-+      var solarFestival = getLunarInfo().solarFestival;
-+      var lunarFestival = getLunarInfo().lunarFestival;
-+      var term = getLunarInfo().term;
++      var info = getLunarInfo();
++      var zodiac = info.zodiac;
++      var GanZhiYear = info.GanZhiYear;
++      var solarFestival = info.solarFestival;
++      var lunarFestival = info.lunarFestival;
++      var term = info.term;
++      var lunarMonthName = info.lunarMonthName;
++      var lunarDayName = info.lunarDayName;
++      var showtext=GanZhiYear+"["+zodiac+"]年 "+lunarMonthName+lunarDayName;
++      return showtext;
++    }
++    function showFestival(){
++      var info = getLunarInfo();
++      var solarFestival = info.solarFestival;
++      var lunarFestival = info.lunarFestival;
++      var term = info.term;
 +      var showtext="";
 +      if(solarFestival)showtext+=solarFestival+",";
-+      if(lunarFestival)showtext+=lunarFestival+"<br/>";
-+      if(term)showtext+=term;
++      if(lunarFestival)showtext+=lunarFestival+",";
++      if(term){
++        showtext+=term;
++      }else{
++        showtext=showtext.substring(0,showtext.length-1)
++      }
 +      return showtext;
 +    }
      states: State {
          name: "hidePageStackIndicator"
          when: root.status != PageStatus.Inactive
-@@ -154,7 +173,23 @@ Page {
+@@ -39,7 +74,7 @@ Page {
+ 
+     SilicaListView {
+         id: view
+-        anchors.fill: parent
++        anchors.fill:parent
+ 
+         PullDownMenu {
+             id: pullDownMenu
+@@ -69,7 +104,7 @@ Page {
+ 
+         header: Item {
+             width: view.width
+-            height: dateHeader.height + (isPortrait ? datePicker.height : Theme.paddingLarge)
++            height: testColumn.height + (isPortrait ? datePicker.height : Theme.paddingLarge)
+         }
+ 
+         model: AgendaModel { id: agendaModel }
+@@ -81,7 +116,7 @@ Page {
+ 
+             x: isPortrait ? 0 : datePicker.width + Theme.paddingSmall
+             width: isPortrait ? view.width : view.width - datePicker.width
+-
++            y:isPortrait?datePicker.y + datePicker.height + testColumn.height: view.headerItem.y + Theme.paddingLarge + testColumn.height
+             Component.onCompleted: activeDay = agendaModel.startDate
+ 
+             Connections {
+@@ -112,7 +147,9 @@ Page {
+         }
+ 
+         Column {
++            id:testColumn
+             width: isPortrait ? view.width : view.width - datePicker.width
++            height:dateHeader.height + patchInfo.height + Theme.paddingLarge
+             parent: view.contentItem
+             x: isPortrait ? 0 : datePicker.width
+             y: isPortrait ? datePicker.y + datePicker.height : view.headerItem.y + Theme.paddingLarge
+@@ -122,6 +159,7 @@ Page {
+                 width: parent.width
+                 height: Screen.sizeCategory > Screen.Medium ? Theme.itemSizeMedium : Theme.itemSizeExtraSmall
+                 onClicked: {
++                  console.log(testColumn.height)
+                     var p = pageStack.push("DayPage.qml", { "width": root.width, "date": datePicker.date })
+                     if (p !== null) {
+                         p.statusChanged.connect(function() {
+@@ -154,8 +192,59 @@ Page {
                                                                                      : Theme.primaryColor)
                  }
              }
 -
-+            Item {
-+                width: parent.width
-+                height: lunarText.height + Theme.paddingLarge
-+                visible: root.initialLoadDone && lunarText.text.length > 6
-+                Label {
-+                    id: lunarText
-+                    x: Theme.horizontalPageMargin
-+                    anchors.verticalCenter: parent.verticalCenter
-+                    width: parent.width - Theme.paddingLarge *2
-+                    text:showLunarInfo()
-+                    wrapMode: Text.WordWrap
-+                    textFormat: Text.RichText;
-+                    horizontalAlignment: Text.AlignRight
-+                    font.pixelSize: Theme.fontSizeMedium
-+                    color: Theme.secondaryHighlightColor
-+                }
++            Item{
++              id:patchInfo
++              width:parent.width
++              height:lunarItem.height+festivalItem.height + Theme.paddingMedium * 2
++              Item {
++                id:lunarItem
++                  anchors{
++                    top:dateHeader.bottom
++                    topMargin:Theme.paddingLarge
++                  }
++                  width: parent.width
++                  height: lunarText.height + Theme.paddingLarge
++                  visible: root.initialLoadDone
++                  Label {
++                      id: lunarText
++                      x: Theme.horizontalPageMargin
++                      anchors.verticalCenter: parent.verticalCenter
++                      width: parent.width - Theme.paddingLarge *2
++                      text:showLunarInfo()
++                      wrapMode: Text.WordWrap
++                      textFormat: Text.RichText;
++                      horizontalAlignment: Text.AlignRight
++                      font.pixelSize: Theme.fontSizeLarge
++                      color: Theme.secondaryHighlightColor
++                  }
++              }
++              Item {
++                  id:festivalItem
++                  anchors{
++                    top:lunarItem.bottom
++                    topMargin:Theme.paddingLarge
++                  }
++                  width: parent.width
++                  height: festivalText.txt ?festivalText.height + Theme.paddingLarge:0
++                  visible: root.initialLoadDone && festivalText.text.length > 6
++                  Label {
++                      id: festivalText
++                      x: Theme.horizontalPageMargin
++                      anchors.verticalCenter: parent.verticalCenter
++                      width: parent.width - Theme.paddingLarge *2
++                      text:showFestival()
++                      wrapMode: Text.WordWrap
++                      textFormat: Text.RichText;
++                      horizontalAlignment: Text.AlignRight
++                      font.pixelSize: Theme.fontSizeMedium
++                      color: Theme.secondaryHighlightColor
++                  }
++              }
 +            }
              Item {
++              anchors{
++                top:patchInfo.bottom
++              }
                  width: parent.width
                  height: placeholderText.height + 2*Theme.paddingLarge
-@@ -176,4 +211,3 @@ Page {
+                 visible: view.count === 0 && root.initialLoadDone
+@@ -175,5 +264,5 @@ Page {
+             }
          }
      }
- }
--
+-}
+ 
++}
