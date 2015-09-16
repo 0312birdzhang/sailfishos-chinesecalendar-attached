@@ -23,7 +23,7 @@
                          text: model.day
                          font.pixelSize: Theme.fontSizeMedium
                          font.bold: model.day === wallClock.time.getDate()
-@@ -122,6 +127,38 @@ Column {
+@@ -122,11 +127,72 @@ Column {
                              return Theme.secondaryColor
                          }
                      }
@@ -31,11 +31,12 @@
 +                        id:lunarday
 +                        anchors{
 +                            top:label.bottom
-+			    topMargin:Theme.paddingSmall*0.3
++			                      topMargin:Theme.paddingSmall*0.3
 +                            horizontalCenter: parent.horizontalCenter
 +                        }
 +                        text: {
 +                              var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
++
 +                              var lunarDay = lunar.lunarDay
 +                              if(lunarDay == 1||lunarDay == "1"){
 +                                  return lunar.lunarMonthName
@@ -59,9 +60,43 @@
 +                            return Theme.secondaryColor
 +                        }
 +                    }
++                    Rectangle {
++                        id:workday
++                        anchors{
++                          top:label.baseline
++                          topMargin: 5
++                          right:parent.right
++                          rightMargin: events.count > 0?parent.width/2/2:parent.width/2 - parent.width / 5 /2
++                        }
++                        width: parent.width / 5
++                        height: 4
++                        radius: 2
++                        visible: {
++                          var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
++                          return lunar.worktime != 0||lunar.worktime != "0"
++                        }
++                        color: {
++                          var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
++                          var worktime = lunar.worktime;
++                          if(worktime == 2){
++                            return "#00FF7F"
++                          }else if(worktime == 1){
++                            return "#FA8072"
++                          }else{
++                            return "#00000000"
++                          }
  
++                        }
++                    }
                      Rectangle {
                          anchors.top: label.baseline
+                         anchors.topMargin: 5
+-                        anchors.horizontalCenter: parent.horizontalCenter
++                        anchors.left: parent.left
++                        anchors.leftMargin:workday.visible?parent.width/2/2:parent.width/2 - parent.width / 5 /2
+                         width: parent.width / 5
+                         radius: 2
+                         height: 4
 --- /usr/share/jolla-calendar/pages/MonthPage.qml
 +++ /usr/share/jolla-calendar/pages/MonthPage.qml
 @@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
