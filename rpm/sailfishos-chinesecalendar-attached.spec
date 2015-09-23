@@ -10,8 +10,8 @@ BuildArch: armv7hl
 # << macros
 
 Summary:    Chinese Calendar patch
-Version:    0.3.3
-Release:    1
+Version:    0.3.4
+Release:    2
 Group:      Qt/Qt
 License:    TODO
 Source0:    %{name}-%{version}.tar.bz2

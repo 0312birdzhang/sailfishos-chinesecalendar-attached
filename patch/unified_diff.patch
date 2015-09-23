@@ -234,7 +234,7 @@
 +                  }
 +                  width: parent.width
 +                  height: festivalText.txt ?festivalText.height + Theme.paddingLarge:0
-+                  visible: root.initialLoadDone && festivalText.text.length > 6
++                  visible: root.initialLoadDone && festivalText.text.length > 0
 +                  Label {
 +                      id: festivalText
 +                      x: Theme.horizontalPageMargin
