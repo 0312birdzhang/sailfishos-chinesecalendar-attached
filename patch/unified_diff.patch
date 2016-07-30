@@ -25,7 +25,11 @@ index 98ff566..efd1afa 100644
                          text: model.day.toLocaleString()
                          font.pixelSize: Theme.fontSizeMedium
                          font.bold: model.day === wallClock.time.getDate()
+<<<<<<< HEAD
 @@ -122,11 +127,73 @@ Column {
+=======
+@@ -122,11 +127,72 @@ Column {
+>>>>>>> 9d0cb68188626020fa145cf069ea1196564adecb
                              return Theme.secondaryColor
                          }
                      }
@@ -80,8 +84,12 @@ index 98ff566..efd1afa 100644
 +                        color: {
 +                          var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
 +                          var worktime = lunar.worktime;
+<<<<<<< HEAD
 +                          var lunarfestival = lunar.lunarFestival;
 +                          if(worktime == 2||lunarfestival){
+=======
++                          if(worktime == 2){
+>>>>>>> 9d0cb68188626020fa145cf069ea1196564adecb
 +                            return "#00FF7F"
 +                          }else if(worktime == 1){
 +                            return "#FA8072"
@@ -100,11 +108,17 @@ index 98ff566..efd1afa 100644
                          width: parent.width / 5
                          radius: 2
                          height: 4
+<<<<<<< HEAD
 diff --git a/usr/share/jolla-calendar/pages/MonthPage.qml.bak b/usr/share/jolla-calendar/pages/MonthPage.qml
 index a60f51a..f98e906 100644
 --- a/usr/share/jolla-calendar/pages/MonthPage.qml.bak
 +++ b/usr/share/jolla-calendar/pages/MonthPage.qml
 @@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
+=======
+--- /usr/share/jolla-calendar/pages/MonthPage.qml
++++ /usr/share/jolla-calendar/pages/MonthPage.qml
+@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
+>>>>>>> 9d0cb68188626020fa145cf069ea1196564adecb
  import org.nemomobile.calendar 1.0
  import org.nemomobile.time 1.0
  import "Util.js" as Util

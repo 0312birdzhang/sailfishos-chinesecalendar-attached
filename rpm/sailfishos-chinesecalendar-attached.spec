@@ -10,8 +10,13 @@ BuildArch: noarch
 # << macros
 
 Summary:    Chinese Calendar patch
+<<<<<<< HEAD
 Version:    0.4.0
 Release:    1
+=======
+Version:    0.3.4
+Release:    2
+>>>>>>> 9d0cb68188626020fa145cf069ea1196564adecb
 Group:      Qt/Qt
 License:    TODO
 Source0:    %{name}-%{version}.tar.bz2
