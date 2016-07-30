@@ -1,5 +1,7 @@
---- /usr/share/jolla-calendar/pages/DatePickerPanel.qml
-+++ /usr/share/jolla-calendar/pages/DatePickerPanel.qml
+diff --git a/usr/share/jolla-calendar/pages/DatePickerPanel.qml.bak b/usr/share/jolla-calendar/pages/DatePickerPanel.qml
+index 98ff566..efd1afa 100644
+--- a/usr/share/jolla-calendar/pages/DatePickerPanel.qml.bak
++++ b/usr/share/jolla-calendar/pages/DatePickerPanel.qml
 @@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
  import org.nemomobile.calendar 1.0
  import org.nemomobile.time 1.0
@@ -20,10 +22,10 @@
 +                            horizontalCenter: parent.horizontalCenter
 +
 +                        }
-                         text: model.day
+                         text: model.day.toLocaleString()
                          font.pixelSize: Theme.fontSizeMedium
                          font.bold: model.day === wallClock.time.getDate()
-@@ -122,6 +127,38 @@ Column {
+@@ -122,11 +127,73 @@ Column {
                              return Theme.secondaryColor
                          }
                      }
@@ -31,11 +33,12 @@
 +                        id:lunarday
 +                        anchors{
 +                            top:label.bottom
-+			    topMargin:Theme.paddingSmall*0.3
++			                      topMargin:Theme.paddingSmall*0.3
 +                            horizontalCenter: parent.horizontalCenter
 +                        }
 +                        text: {
 +                              var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
++
 +                              var lunarDay = lunar.lunarDay
 +                              if(lunarDay == 1||lunarDay == "1"){
 +                                  return lunar.lunarMonthName
@@ -59,24 +62,61 @@
 +                            return Theme.secondaryColor
 +                        }
 +                    }
++                    Rectangle {
++                        id:workday
++                        anchors{
++                          top:label.baseline
++                          topMargin: 5
++                          right:parent.right
++                          rightMargin: events.count > 0?parent.width/2/2:parent.width/2 - parent.width / 5 /2
++                        }
++                        width: parent.width / 5
++                        height: 4
++                        radius: 2
++                        visible: {
++                          var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
++                          return lunar.worktime != 0||lunar.worktime != "0"
++                        }
++                        color: {
++                          var lunar = Lunar.LunarCalendar.solarToLunar(model.year, model.month, model.day)
++                          var worktime = lunar.worktime;
++                          var lunarfestival = lunar.lunarFestival;
++                          if(worktime == 2||lunarfestival){
++                            return "#00FF7F"
++                          }else if(worktime == 1){
++                            return "#FA8072"
++                          }else{
++                            return "#00000000"
++                          }
  
++                        }
++                    }
                      Rectangle {
                          anchors.top: label.baseline
---- /usr/share/jolla-calendar/pages/MonthPage.qml
-+++ /usr/share/jolla-calendar/pages/MonthPage.qml
-@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
+                         anchors.topMargin: 5
+-                        anchors.horizontalCenter: parent.horizontalCenter
++                        anchors.left: parent.left
++                        anchors.leftMargin:workday.visible?parent.width/2/2:parent.width/2 - parent.width / 5 /2
+                         width: parent.width / 5
+                         radius: 2
+                         height: 4
+diff --git a/usr/share/jolla-calendar/pages/MonthPage.qml.bak b/usr/share/jolla-calendar/pages/MonthPage.qml
+index a60f51a..f98e906 100644
+--- a/usr/share/jolla-calendar/pages/MonthPage.qml.bak
++++ b/usr/share/jolla-calendar/pages/MonthPage.qml
+@@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
  import org.nemomobile.calendar 1.0
  import org.nemomobile.time 1.0
  import "Util.js" as Util
--
 +import "LunarCalendar.js" as Lunar
+ 
  Page {
      id: root
+@@ -22,7 +23,41 @@ Page {
  
-@@ -23,6 +23,41 @@ Page {
          pageStack.push("EventEditPage.qml", { defaultDate: d })
      }
- 
+-
 +    function getLunarInfo(){
 +      var now = new Date();
 +      var d = datePicker.date
@@ -115,51 +155,35 @@
      states: State {
          name: "hidePageStackIndicator"
          when: root.status != PageStatus.Inactive
-@@ -39,7 +74,7 @@ Page {
- 
-     SilicaListView {
-         id: view
--        anchors.fill: parent
-+        anchors.fill:parent
- 
-         PullDownMenu {
-             id: pullDownMenu
-@@ -69,7 +104,7 @@ Page {
+@@ -69,7 +104,8 @@ Page {
  
          header: Item {
              width: view.width
 -            height: dateHeader.height + (isPortrait ? datePicker.height : Theme.paddingLarge)
-+            height: testColumn.height + (isPortrait ? datePicker.height : Theme.paddingLarge)
++            //height: dateHeader.height + (isPortrait ? datePicker.height : Theme.paddingLarge)
++            height: myColumn.height + (isPortrait ? datePicker.height : Theme.paddingLarge)
          }
  
          model: AgendaModel { id: agendaModel }
-@@ -81,7 +116,7 @@ Page {
+@@ -81,7 +117,7 @@ Page {
  
              x: isPortrait ? 0 : datePicker.width + Theme.paddingSmall
              width: isPortrait ? view.width : view.width - datePicker.width
 -
-+            y:isPortrait?datePicker.y + datePicker.height + testColumn.height: view.headerItem.y + Theme.paddingLarge + testColumn.height
++            y:isPortrait?datePicker.y + datePicker.height + myColumn.height: view.headerItem.y + Theme.paddingLarge + myColumn.height
              Component.onCompleted: activeDay = agendaModel.startDate
  
              Connections {
-@@ -112,7 +147,9 @@ Page {
+@@ -112,7 +148,9 @@ Page {
          }
  
          Column {
-+            id:testColumn
++            id:myColumn
              width: isPortrait ? view.width : view.width - datePicker.width
 +            height:dateHeader.height + patchInfo.height + Theme.paddingLarge
              parent: view.contentItem
              x: isPortrait ? 0 : datePicker.width
              y: isPortrait ? datePicker.y + datePicker.height : view.headerItem.y + Theme.paddingLarge
-@@ -122,6 +159,7 @@ Page {
-                 width: parent.width
-                 height: Screen.sizeCategory > Screen.Medium ? Theme.itemSizeMedium : Theme.itemSizeExtraSmall
-                 onClicked: {
-+                  console.log(testColumn.height)
-                     var p = pageStack.push("DayPage.qml", { "width": root.width, "date": datePicker.date })
-                     if (p !== null) {
-                         p.statusChanged.connect(function() {
 @@ -154,8 +192,59 @@ Page {
                                                                                      : Theme.primaryColor)
                  }
@@ -199,7 +223,7 @@
 +                  }
 +                  width: parent.width
 +                  height: festivalText.txt ?festivalText.height + Theme.paddingLarge:0
-+                  visible: root.initialLoadDone && festivalText.text.length > 6
++                  visible: root.initialLoadDone && festivalText.text.length > 0
 +                  Label {
 +                      id: festivalText
 +                      x: Theme.horizontalPageMargin
@@ -221,10 +245,3 @@
                  width: parent.width
                  height: placeholderText.height + 2*Theme.paddingLarge
                  visible: view.count === 0 && root.initialLoadDone
-@@ -175,5 +264,5 @@ Page {
-             }
-         }
-     }
--}
- 
-+}

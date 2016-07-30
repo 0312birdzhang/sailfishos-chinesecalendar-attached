@@ -6,17 +6,17 @@
 Name:       sailfishos-chinesecalendar-attached
 
 # >> macros
-BuildArch: armv7hl
+BuildArch: noarch
 # << macros
 
 Summary:    Chinese Calendar patch
-Version:    0.3.0
+Version:    0.4.0
 Release:    1
 Group:      Qt/Qt
 License:    TODO
 Source0:    %{name}-%{version}.tar.bz2
 Requires:   patchmanager
-Requires:   jolla-calendar >= 0.6.3
+Requires:   jolla-calendar >= 0.6.7
 %description
 Add Chinese lunar calendar to Jolla Calendar.
 
