@@ -10,7 +10,7 @@ BuildArch: noarch
 # << macros
 
 Summary:    Chinese Calendar patch
-Version:    0.5.0
+Version:    0.5.1
 Release:    1
 Group:      Qt/Qt
 License:    TODO

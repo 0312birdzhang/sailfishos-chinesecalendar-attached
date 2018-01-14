@@ -1,6 +1,6 @@
-diff --git a/usr/share/jolla-calendar/pages/DatePickerPanel.qml.bak b/usr/share/jolla-calendar/pages/DatePickerPanel.qml
+diff --git a/usr/share/jolla-calendar/pages/DatePickerPanel.qml b/usr/share/jolla-calendar/pages/DatePickerPanel.qml
 index 98ff566..efd1afa 100644
---- a/usr/share/jolla-calendar/pages/DatePickerPanel.qml.bak
+--- a/usr/share/jolla-calendar/pages/DatePickerPanel.qml
 +++ b/usr/share/jolla-calendar/pages/DatePickerPanel.qml
 @@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
  import org.nemomobile.calendar 1.0
