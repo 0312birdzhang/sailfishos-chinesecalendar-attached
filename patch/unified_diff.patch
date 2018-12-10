@@ -102,7 +102,7 @@ index 98ff566..efd1afa 100644
                          height: 4
 diff --git a/usr/share/jolla-calendar/pages/MonthPage.qml.bak b/usr/share/jolla-calendar/pages/MonthPage.qml
 index a60f51a..f98e906 100644
---- a/usr/share/jolla-calendar/pages/MonthPage.qml.bak
+--- a/usr/share/jolla-calendar/pages/MonthPage.qml
 +++ b/usr/share/jolla-calendar/pages/MonthPage.qml
 @@ -3,6 +3,7 @@ import Sailfish.Silica 1.0
  import org.nemomobile.calendar 1.0
